@@ -24,3 +24,36 @@
 // Una vez desglosada la información habrá que pintarla a través de otra función que nos recupere el resultado del fetch y nos pinte dentro de nuestro elemento pokedex una lista con dichos elementos. Esta función deberá ser ejecutada una vez termine la función del fetch (recordemos el flujo de funciones).
 // Por último tenemos que llamar a la función fetch para que se ejecute al arrancar la aplicación y así nos recuperará la información y nos pintará nuestro listado.
 // Tened muy en cuenta la estructura del proyecto a la hora de llamar archivos para que todo funciones correctamente.
+
+getPokemons = () => {
+    for (let i = 0; i < 150; i++) {
+        fetch(`https://pokeapi.co/api/v2/pokemon/${i + 1}`)
+            .then((response) => response.json())
+            .then((pokemonData) => {
+                const pokemon = {
+                    name: pokemonData.name,
+                    image: pokemonData.sprites['front_default'],
+                    type: pokemonData.types
+                        .map((type) => type.type.name)
+                        .join(', '),
+                    id: pokemonData.id,
+                };
+                printPokemons(pokemon);
+            });
+    }
+};
+
+printPokemons = (pokemon) => {
+    const pokedex = document.querySelector('#pokedex');
+    const pokemonHTML = `
+    <li class="card">
+    <h2 class="card-title">${pokemon.name}</h2>
+    <img class="card-img" src="${pokemon.image}" alt="${pokemon.name}">
+    <p class="card-subtitle">Type: ${pokemon.type}</p>
+    <p>ID: ${pokemon.id}</p>
+    </li>
+    `;
+    pokedex.innerHTML += pokemonHTML;
+};
+
+getPokemons();
